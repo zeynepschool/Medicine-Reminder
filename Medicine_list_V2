@@ -1,0 +1,168 @@
+package com.example.myapplication1;
+
+import android.app.TimePickerDialog;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Gravity;
+import android.widget.*;
+import androidx.appcompat.app.AppCompatActivity;
+import java.util.Calendar;
+
+public class MainActivity2 extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Root ScrollView with a vertical LinearLayout inside
+        ScrollView scrollView = new ScrollView(this);
+
+        LinearLayout rootLayout = new LinearLayout(this);
+        rootLayout.setOrientation(LinearLayout.VERTICAL);
+        int padding = dpToPx(16);
+        rootLayout.setPadding(padding, padding, padding, padding);
+
+        // --- Add Back Navigation Bar ---
+        LinearLayout navbar = new LinearLayout(this);
+        navbar.setOrientation(LinearLayout.HORIZONTAL);
+        navbar.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        navbar.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+
+        Button backButton = new Button(this);
+        backButton.setText("← Back");
+        backButton.setOnClickListener(v -> finish());  // Finish this activity
+        navbar.addView(backButton);
+
+// Add navbar to the top of the layout
+        rootLayout.addView(navbar);
+
+
+        scrollView.addView(rootLayout);
+
+        // LayoutParams with margin
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, dpToPx(16), 0, 0);
+
+        // Title TextView
+        TextView title = new TextView(this);
+        title.setText("Add Medicine");
+        title.setTextSize(24);
+        title.setGravity(Gravity.CENTER);
+        title.setLayoutParams(params);
+        rootLayout.addView(title);
+
+        // Medicine Name input
+        EditText medNameInput = new EditText(this);
+        medNameInput.setHint("Medicine Name");
+        medNameInput.setLayoutParams(params);
+        rootLayout.addView(medNameInput);
+
+        // Time Picker button + display text
+        Button timeButton = new Button(this);
+        timeButton.setText("Select Time");
+        timeButton.setLayoutParams(params);
+        rootLayout.addView(timeButton);
+
+        TextView selectedTimeText = new TextView(this);
+        selectedTimeText.setText("No time selected");
+        selectedTimeText.setLayoutParams(params);
+        rootLayout.addView(selectedTimeText);
+
+        timeButton.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+
+            TimePickerDialog dialog = new TimePickerDialog(this,
+                    (view, hourOfDay, minute1) -> {
+                        int hour12 = hourOfDay % 12;
+                        if (hour12 == 0) hour12 = 12;
+                        String amPm = (hourOfDay >= 12) ? "PM" : "AM";
+                        selectedTimeText.setText(String.format("Time: %02d:%02d %s", hour12, minute1, amPm));
+                    }, hour, minute, false);
+            dialog.show();
+        });
+
+        // Times per day input
+        EditText timesPerDayInput = new EditText(this);
+        timesPerDayInput.setHint("Times per day (e.g., 3)");
+        timesPerDayInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        timesPerDayInput.setLayoutParams(params);
+        rootLayout.addView(timesPerDayInput);
+
+        // Days of week label
+        TextView daysLabel = new TextView(this);
+        daysLabel.setText("Select Days:");
+        daysLabel.setLayoutParams(params);
+        rootLayout.addView(daysLabel);
+
+        // Days checkboxes
+        String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        CheckBox[] checkboxes = new CheckBox[days.length];
+        for (int i = 0; i < days.length; i++) {
+            checkboxes[i] = new CheckBox(this);
+            checkboxes[i].setText(days[i]);
+            checkboxes[i].setLayoutParams(params);
+            rootLayout.addView(checkboxes[i]);
+        }
+
+        // Submit button
+        Button submitButton = new Button(this);
+        submitButton.setText("Add to List");
+        submitButton.setLayoutParams(params);
+        rootLayout.addView(submitButton);
+
+        submitButton.setOnClickListener(v -> {
+            String name = medNameInput.getText().toString().trim();
+            String time = selectedTimeText.getText().toString();
+            String timesPerDay = timesPerDayInput.getText().toString().trim();
+
+            if (TextUtils.isEmpty(name)) {
+                Toast.makeText(this, "Please enter medicine name", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (time.equals("No time selected")) {
+                Toast.makeText(this, "Please select a time", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (TextUtils.isEmpty(timesPerDay)) {
+                Toast.makeText(this, "Please enter times per day", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            StringBuilder selectedDays = new StringBuilder();
+            for (CheckBox cb : checkboxes) {
+                if (cb.isChecked()) {
+                    selectedDays.append(cb.getText()).append(" ");
+                }
+            }
+
+            if (selectedDays.length() == 0) {
+                Toast.makeText(this, "Please select at least one day", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Show collected info as Toast for now
+            Toast.makeText(this,
+                    "Medicine: " + name + "\n" +
+                            time + "\n" +
+                            "Times/day: " + timesPerDay + "\n" +
+                            "Days: " + selectedDays.toString(),
+                    Toast.LENGTH_LONG).show();
+
+            // TODO: Save medicine reminder data as needed
+        });
+
+        setContentView(scrollView);
+    }
+
+    // Helper method: convert dp to pixels
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
+    }
+}
