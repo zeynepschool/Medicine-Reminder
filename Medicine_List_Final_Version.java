@@ -101,6 +101,7 @@ public class MainActivity2 extends AppCompatActivity {
 
         // Limit to max 3 digits
         timesPerDayInput.setFilters(new InputFilter[] { new InputFilter.LengthFilter(3) });
+        rootLayout.addView(timesPerDayInput);
 
         // Days of week label
         TextView daysLabel = new TextView(this);
