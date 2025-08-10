@@ -26,47 +26,49 @@ public class MainActivity2 extends AppCompatActivity {
      * Called when the activity is first created.
      * Sets up the entire user interface programmatically,
      * including inputs, buttons, and event listeners.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state.
      */
     @Override
-    protected void onCreate(Bundle saved_instance_state) {
-        super.onCreate(saved_instance_state);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         // Create a scrollable container for the UI
-        ScrollView scroll_view = new ScrollView(this);
+        ScrollView scrollView = new ScrollView(this);
 
         // Root layout with vertical orientation to hold all UI elements
-        LinearLayout root_layout = new LinearLayout(this);
-        root_layout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout rootLayout = new LinearLayout(this);
+        rootLayout.setOrientation(LinearLayout.VERTICAL);
 
         // Set padding around the root layout in pixels (converted from dp)
-        int padding = dp_to_px(16);
-        root_layout.setPadding(padding, padding, padding, padding);
+        int padding = dpToPx(16);
+        rootLayout.setPadding(padding, padding, padding, padding);
 
         // Create a horizontal navigation bar layout with back button
-        LinearLayout nav_bar = new LinearLayout(this);
-        nav_bar.setOrientation(LinearLayout.HORIZONTAL);
-        nav_bar.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
-        nav_bar.setLayoutParams(new LinearLayout.LayoutParams(
+        LinearLayout navBar = new LinearLayout(this);
+        navBar.setOrientation(LinearLayout.HORIZONTAL);
+        navBar.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        navBar.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT));
 
         // Create a "Back" button to close the activity when clicked
-        Button back_button = new Button(this);
-        back_button.setText("← Back");
-        back_button.setOnClickListener(v -> finish());
-        nav_bar.addView(back_button);
+        Button backButton = new Button(this);
+        backButton.setText("← Back");
+        backButton.setOnClickListener(v -> finish());
+        navBar.addView(backButton);
 
         // Add navigation bar to the root layout
-        root_layout.addView(nav_bar);
+        rootLayout.addView(navBar);
 
         // Add the root layout inside the scroll view
-        scroll_view.addView(root_layout);
+        scrollView.addView(rootLayout);
 
         // Layout parameters with margin for UI components
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, dp_to_px(16), 0, 0);
+        params.setMargins(0, dpToPx(16), 0, 0);
 
         // Title TextView for the screen
         TextView title = new TextView(this);
@@ -74,29 +76,29 @@ public class MainActivity2 extends AppCompatActivity {
         title.setTextSize(24);
         title.setGravity(Gravity.CENTER);
         title.setLayoutParams(params);
-        root_layout.addView(title);
+        rootLayout.addView(title);
 
         // Input field for medicine name with max length 20 characters
-        EditText med_name_input = new EditText(this);
-        med_name_input.setHint("Medicine Name");
-        med_name_input.setLayoutParams(params);
-        med_name_input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(20) });
-        root_layout.addView(med_name_input);
+        EditText medNameInput = new EditText(this);
+        medNameInput.setHint("Medicine Name");
+        medNameInput.setLayoutParams(params);
+        medNameInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        rootLayout.addView(medNameInput);
 
         // Button to open time picker dialog
-        Button time_button = new Button(this);
-        time_button.setText("Select Time");
-        time_button.setLayoutParams(params);
-        root_layout.addView(time_button);
+        Button timeButton = new Button(this);
+        timeButton.setText("Select Time");
+        timeButton.setLayoutParams(params);
+        rootLayout.addView(timeButton);
 
         // TextView to display the selected time or default message
-        TextView selected_time_text = new TextView(this);
-        selected_time_text.setText("No time selected");
-        selected_time_text.setLayoutParams(params);
-        root_layout.addView(selected_time_text);
+        TextView selectedTimeText = new TextView(this);
+        selectedTimeText.setText("No time selected");
+        selectedTimeText.setLayoutParams(params);
+        rootLayout.addView(selectedTimeText);
 
         // Set OnClickListener to open a TimePickerDialog when "Select Time" button is clicked
-        time_button.setOnClickListener(v -> {
+        timeButton.setOnClickListener(v -> {
             // Get current time as default values in time picker
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -104,55 +106,55 @@ public class MainActivity2 extends AppCompatActivity {
 
             // Create and show time picker dialog
             TimePickerDialog dialog = new TimePickerDialog(this,
-                    (view, hour_of_day, minute1) -> {
+                    (view, hourOfDay, minute1) -> {
                         // Convert 24-hour time to 12-hour format with AM/PM
-                        int hour12 = hour_of_day % 12;
+                        int hour12 = hourOfDay % 12;
                         if (hour12 == 0) hour12 = 12;
-                        String am_pm = (hour_of_day >= 12) ? "PM" : "AM";
+                        String amPm = (hourOfDay >= 12) ? "PM" : "AM";
                         // Update the TextView to show selected time
-                        selected_time_text.setText(String.format("Time: %02d:%02d %s", hour12, minute1, am_pm));
+                        selectedTimeText.setText(String.format("Time: %02d:%02d %s", hour12, minute1, amPm));
                     }, hour, minute, false);
             dialog.show();
         });
 
         // Input field for number of times to take medicine per day (numeric input)
-        EditText times_per_day_input = new EditText(this);
-        times_per_day_input.setHint("Times per day (e.g., 3)");
-        times_per_day_input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
-        times_per_day_input.setLayoutParams(params);
-        times_per_day_input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(3) });
-        root_layout.addView(times_per_day_input);
+        EditText timesPerDayInput = new EditText(this);
+        timesPerDayInput.setHint("Times per day (e.g., 3)");
+        timesPerDayInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        timesPerDayInput.setLayoutParams(params);
+        timesPerDayInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        rootLayout.addView(timesPerDayInput);
 
         // Label TextView for day selection section
-        TextView days_label = new TextView(this);
-        days_label.setText("Select Days:");
-        days_label.setLayoutParams(params);
-        root_layout.addView(days_label);
+        TextView daysLabel = new TextView(this);
+        daysLabel.setText("Select Days:");
+        daysLabel.setLayoutParams(params);
+        rootLayout.addView(daysLabel);
 
         // Array of days for checkboxes
         String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 
         // Create checkboxes for each day of the week and add to layout
-        CheckBox[] checkboxes = new CheckBox[days.length];
+        CheckBox[] checkBoxes = new CheckBox[days.length];
         for (int i = 0; i < days.length; i++) {
-            checkboxes[i] = new CheckBox(this);
-            checkboxes[i].setText(days[i]);
-            checkboxes[i].setLayoutParams(params);
-            root_layout.addView(checkboxes[i]);
+            checkBoxes[i] = new CheckBox(this);
+            checkBoxes[i].setText(days[i]);
+            checkBoxes[i].setLayoutParams(params);
+            rootLayout.addView(checkBoxes[i]);
         }
 
         // Button to submit the form and add medicine reminder
-        Button submit_button = new Button(this);
-        submit_button.setText("Add to List");
-        submit_button.setLayoutParams(params);
-        root_layout.addView(submit_button);
+        Button submitButton = new Button(this);
+        submitButton.setText("Add to List");
+        submitButton.setLayoutParams(params);
+        rootLayout.addView(submitButton);
 
         // Handle submit button click event
-        submit_button.setOnClickListener(v -> {
+        submitButton.setOnClickListener(v -> {
             // Get input values from UI components
-            String name = med_name_input.getText().toString().trim();
-            String time = selected_time_text.getText().toString();
-            String times_per_day = times_per_day_input.getText().toString().trim();
+            String name = medNameInput.getText().toString().trim();
+            String time = selectedTimeText.getText().toString();
+            String timesPerDay = timesPerDayInput.getText().toString().trim();
 
             // Validate medicine name is not empty
             if (TextUtils.isEmpty(name)) {
@@ -165,62 +167,67 @@ public class MainActivity2 extends AppCompatActivity {
                 return;
             }
             // Validate times per day input is not empty
-            if (TextUtils.isEmpty(times_per_day)) {
+            if (TextUtils.isEmpty(timesPerDay)) {
                 Toast.makeText(this, "Please enter times per day", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Build a string of selected days separated by spaces
-            StringBuilder selected_days_builder = new StringBuilder();
-            for (CheckBox cb : checkboxes) {
+            StringBuilder selectedDaysBuilder = new StringBuilder();
+            for (CheckBox cb : checkBoxes) {
                 if (cb.isChecked()) {
-                    selected_days_builder.append(cb.getText()).append(" ");
+                    selectedDaysBuilder.append(cb.getText()).append(" ");
                 }
             }
 
             // Validate at least one day is selected
-            if (selected_days_builder.length() == 0) {
+            if (selectedDaysBuilder.length() == 0) {
                 Toast.makeText(this, "Please select at least one day", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Combine all information into one string for saving
-            String full_entry = name + " at " + time.replace("Time: ", "") +
-                    ", " + times_per_day + " times/day on " + selected_days_builder.toString().trim();
+            String fullEntry = name + " at " + time.replace("Time: ", "") +
+                    ", " + timesPerDay + " times/day on " + selectedDaysBuilder.toString().trim();
 
             // Save the medicine reminder info to internal storage file
-            save_medicine_to_file(full_entry);
+            saveMedicineToFile(fullEntry);
 
             // Show confirmation Toast with entered details
             Toast.makeText(this,
                     "Medicine: " + name + "\n" +
                             time + "\n" +
-                            "Times/day: " + times_per_day + "\n" +
-                            "Days: " + selected_days_builder.toString(),
+                            "Times/day: " + timesPerDay + "\n" +
+                            "Days: " + selectedDaysBuilder.toString(),
                     Toast.LENGTH_LONG).show();
         });
 
         // Set the entire scrollable layout as the activity content view
-        setContentView(scroll_view);
+        setContentView(scrollView);
     }
 
     /**
      * Converts density-independent pixels (dp) to pixels (px) for current device.
+     *
+     * @param dp The value in dp to convert.
+     * @return Equivalent pixel value for device density.
      */
-    private int dp_to_px(int dp) {
+    private int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
     }
 
     /**
      * Saves medicine information string to a file named "medicines.txt" in append mode.
+     *
+     * @param medicineInfo String containing medicine reminder details to save.
      */
-    private void save_medicine_to_file(String medicine_info) {
+    private void saveMedicineToFile(String medicineInfo) {
         try {
             // Open file output stream in append mode
             FileOutputStream fos = openFileOutput("medicines.txt", MODE_APPEND);
             // Write the medicine info followed by a newline
-            fos.write((medicine_info + "\n").getBytes());
+            fos.write((medicineInfo + "\n").getBytes());
             fos.close();
         } catch (IOException e) {
             // Print stack trace if an error occurs during file writing
