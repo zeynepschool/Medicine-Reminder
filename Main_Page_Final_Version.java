@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,10 +27,10 @@ import java.io.InputStreamReader;
 public class MainActivity extends AppCompatActivity {
 
     // Constants for padding in dp units
-    private static final int PADDING_LEFT_DP = 20;
+    private static final int PADDING_LEFT_DP = 25;
     private static final int PADDING_TOP_DP = 70;
-    private static final int PADDING_RIGHT_DP = 20;
-    private static final int PADDING_BOTTOM_DP = 20;
+    private static final int PADDING_RIGHT_DP = 25;
+    private static final int PADDING_BOTTOM_DP = 25;
 
     // Constant for toolbar height in dp
     private static final int TOOLBAR_HEIGHT_DP = 56;
@@ -38,35 +42,35 @@ public class MainActivity extends AppCompatActivity {
     // Constant for medicine list padding in dp
     private static final int MEDICINE_LIST_PADDING_DP = 16;
 
-    private TextView medicine_list;        // TextView to display saved medicines
-    private LinearLayout content_layout;   // Layout container for main content views
+    private TextView medicineList;       // TextView to display saved medicines
+    private LinearLayout contentLayout;  // Layout container for main content views
 
     /**
      * Called when the activity is starting.
      * Sets up UI components including toolbar, button, and medicine list.
      *
-     * @param saved_instance_state Saved state bundle (if any).
+     * @param savedInstanceState Saved state bundle (if any).
      */
     @Override
-    protected void onCreate(Bundle saved_instance_state) {
-        super.onCreate(saved_instance_state);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         // Create the root CoordinatorLayout for overall screen layout
-        CoordinatorLayout coordinator_layout = new CoordinatorLayout(this);
-        coordinator_layout.setLayoutParams(new CoordinatorLayout.LayoutParams(
+        CoordinatorLayout coordinatorLayout = new CoordinatorLayout(this);
+        coordinatorLayout.setLayoutParams(new CoordinatorLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
 
         // Create vertical LinearLayout for stacking UI elements vertically
-        content_layout = new LinearLayout(this);
-        content_layout.setOrientation(LinearLayout.VERTICAL);
-        content_layout.setPadding(
-                dp_to_px(PADDING_LEFT_DP), dp_to_px(PADDING_TOP_DP),
-                dp_to_px(PADDING_RIGHT_DP), dp_to_px(PADDING_BOTTOM_DP)
+        contentLayout = new LinearLayout(this);
+        contentLayout.setOrientation(LinearLayout.VERTICAL);
+        contentLayout.setPadding(
+                dpToPx(PADDING_LEFT_DP), dpToPx(PADDING_TOP_DP),
+                dpToPx(PADDING_RIGHT_DP), dpToPx(PADDING_BOTTOM_DP)
         );
-        content_layout.setGravity(Gravity.TOP);
-        content_layout.setLayoutParams(new CoordinatorLayout.LayoutParams(
+        contentLayout.setGravity(Gravity.TOP);
+        contentLayout.setLayoutParams(new CoordinatorLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
@@ -78,48 +82,46 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setBackgroundColor(COLOR_TOOLBAR_BG);    // Use constant for toolbar background
         toolbar.setLayoutParams(new Toolbar.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                dp_to_px(TOOLBAR_HEIGHT_DP)
+                dpToPx(TOOLBAR_HEIGHT_DP)
         ));
 
         // Create button to navigate to Add Medicine screen
-        Button go_to_add_button = new Button(this);
-        go_to_add_button.setText("Add Medicine");
-        go_to_add_button.setLayoutParams(new LinearLayout.LayoutParams(
+        Button goToAddButton = new Button(this);
+        goToAddButton.setText("Add Medicine");
+        goToAddButton.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
-        // Set click listener to start MainActivity2 for adding medicines
-        go_to_add_button.setOnClickListener(v -> {
+        goToAddButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, MainActivity2.class);
             startActivity(intent);
         });
 
         // Create TextView to display list of medicines
-        medicine_list = new TextView(this);
-        medicine_list.setTextSize(20); // Increase font size for readability
-        medicine_list.setLineSpacing(1.2f, 1.3f); // Adjust line spacing
-        // Add padding around text content using constant values
-        medicine_list.setPadding(
-                dp_to_px(MEDICINE_LIST_PADDING_DP),
-                dp_to_px(MEDICINE_LIST_PADDING_DP),
-                dp_to_px(MEDICINE_LIST_PADDING_DP),
-                dp_to_px(MEDICINE_LIST_PADDING_DP)
+        medicineList = new TextView(this);
+        medicineList.setTextSize(20); // Increase font size for readability
+        medicineList.setLineSpacing(1.2f, 1.3f); // Adjust line spacing
+        medicineList.setPadding(
+                dpToPx(MEDICINE_LIST_PADDING_DP),
+                dpToPx(MEDICINE_LIST_PADDING_DP),
+                dpToPx(MEDICINE_LIST_PADDING_DP),
+                dpToPx(MEDICINE_LIST_PADDING_DP)
         );
-        medicine_list.setLayoutParams(new LinearLayout.LayoutParams(
+        medicineList.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
 
         // Add button and medicine list TextView to content layout
-        content_layout.addView(go_to_add_button);
-        content_layout.addView(medicine_list);
+        contentLayout.addView(goToAddButton);
+        contentLayout.addView(medicineList);
 
         // Add toolbar and content layout to the root CoordinatorLayout
-        coordinator_layout.addView(toolbar);
-        coordinator_layout.addView(content_layout);
+        coordinatorLayout.addView(toolbar);
+        coordinatorLayout.addView(contentLayout);
 
         // Set the CoordinatorLayout as the activity content view
-        setContentView(coordinator_layout);
+        setContentView(coordinatorLayout);
     }
 
     /**
@@ -129,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        medicine_list.setText(read_medicines_from_file());
+        medicineList.setText(readMedicinesFromFile());
     }
 
     /**
@@ -139,20 +141,15 @@ public class MainActivity extends AppCompatActivity {
      *
      * @return String containing formatted medicine list or a default message.
      */
-    private String read_medicines_from_file() {
+    private String readMedicinesFromFile() {
         StringBuilder builder = new StringBuilder();
-        try {
-            // Open file input stream to read medicines.txt
-            FileInputStream fis = openFileInput("medicines.txt");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+        try (FileInputStream fis = openFileInput("medicines.txt");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(fis))) {
             String line;
-            // Read each line and append to builder with bullet point
             while ((line = reader.readLine()) != null) {
                 builder.append("• ").append(line).append("\n");
             }
-            reader.close();
         } catch (IOException e) {
-            // If reading fails, show default message
             builder.append("No reminders found.");
         }
         return builder.toString();
@@ -164,9 +161,9 @@ public class MainActivity extends AppCompatActivity {
      * @param dp Value in dp units.
      * @return Corresponding value in pixels.
      */
-    private int dp_to_px(int dp) {
+    private int dpToPx(int dp) {
         float scale = getResources().getDisplayMetrics().density;
-        return (int)(dp * scale + 0.5f);
+        return (int) (dp * scale + 0.5f);
     }
 }
 
