@@ -5,15 +5,18 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.*;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+
 import android.text.InputFilter;
 
 /**
  * MainActivity2 class
- *
+ * <p>
  * This activity allows users to add medicine reminders.
  * Users can input the medicine name, select a time using a TimePickerDialog,
  * specify how many times per day the medicine should be taken,
@@ -125,6 +128,7 @@ public class MainActivity2 extends AppCompatActivity {
         timesPerDayInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         rootLayout.addView(timesPerDayInput);
 
+
         // Label TextView for day selection section
         TextView daysLabel = new TextView(this);
         daysLabel.setText("Select Days:");
@@ -169,6 +173,18 @@ public class MainActivity2 extends AppCompatActivity {
             // Validate times per day input is not empty
             if (TextUtils.isEmpty(timesPerDay)) {
                 Toast.makeText(this, "Please enter times per day", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Check if the value is 0
+            try {
+                int timesValue = Integer.parseInt(timesPerDay);
+                if (timesValue == 0) {
+                    timesPerDayInput.setError("Times per day cannot be 0");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                timesPerDayInput.setError("Invalid number");
                 return;
             }
 
